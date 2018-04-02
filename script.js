@@ -1,5 +1,5 @@
 
-const MAX_HEIGHT = 256
+const MAX_HEIGHT = 300
 const NUM_ELEMENTS = 16
 
 const config = {
@@ -51,7 +51,7 @@ function changeActiveClass(element) {
 	removeActiveClass(element.parentElement)
 	if (!element.classList.contains('active'))
 			element.classList.toggle('active')
-	
+
 }
 
 function getRandomColor(index) {
@@ -71,7 +71,7 @@ function setupSort(name) {
 		if (current == config.active)
 			return
 
-		// else 
+		// else
 		config._sort = dekebab(current)
 		setPageTitle(config.active)
 		setPageDescription(config.active)
@@ -84,7 +84,7 @@ function setupSort(name) {
  */
 function setPageTitle(name) {
 	let el = document.getElementById('title')
-	el.innerHTML = name + " Sort" 
+	el.innerHTML = name + " Sort"
 }
 
 function setPageDescription(name) {
@@ -96,11 +96,23 @@ function runAlgo() {
 	const visual = document.getElementById('visual')
 	let index = Math.floor(Math.random()*NUM_ELEMENTS)
 	let index2 = Math.floor(Math.random()*NUM_ELEMENTS)
-	
+
 	let el1 = config._values[index].el
 	let el2 = config._values[index2].el
 
-	visual.insertBefore(el1,el2)
+	el1.style['width'] = '0px'
+	el2.style['width'] = '0px'
+	el1.style['opacity'] = '0'
+	el2.style['opacity'] = '0'
+
+	setTimeout(() => {
+		el1.style['width'] = '25px'
+		el2.style['width'] = '25px'
+		el1.style['opacity'] = '1'
+		el2.style['opacity'] = '1'
+	}, 500)
+
+	visual.insertBefore(el1, el2)
 	console.log(config._values)
 }
 
@@ -132,7 +144,7 @@ function setupDOM() {
 	run.addEventListener('click', runAlgo)
 
 	//let reset = document.getElementById('reset')
-	//reset.addEventListener('click', 
+	//reset.addEventListener('click',
 
 	setupColumns()
 	console.log("All Done.")
@@ -140,4 +152,3 @@ function setupDOM() {
 
 
 window.addEventListener('load', setupDOM)
-
