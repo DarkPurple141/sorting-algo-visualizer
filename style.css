@@ -1,4 +1,5 @@
 #visual {
+	position: relative;
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
@@ -13,9 +14,19 @@
 	width: 25px;
 	margin: 0 5px;
 	height: 100%;
+	color: inherit;
 	background-color: #fff;
 	opacity: 0;
-	transition: opacity 0.3s, width 0.5s;
+	border: none;
+	transition: opacity 0.3s, color 0.5s ease, height 0.8s, border 0.5s ease;
+}
+
+#visual div.sorted {
+	background-color: #28a745;
+}
+
+#visual div.selected {
+	border: 1px solid yellow;
 }
 
 #visual div.loaded {

@@ -1,3 +1,4 @@
+'use strict';
 
 const MAX_HEIGHT = 300
 const NUM_ELEMENTS = 16
@@ -6,6 +7,17 @@ const config = {
 
 	_sort : false,
 	_values: [],
+	_visual: null,
+
+	init: function() {
+		this._values = []
+		this._sort   = "Bucket"
+		this._visual = document.getElementById('visual')
+	},
+
+	get canvas() {
+		return this._visual
+	},
 
 	get active() {
 		return this._sort
@@ -34,36 +46,33 @@ const config = {
 	}
 }
 
-function dekebab(name) {
-	let final = name.split('-')[0]
-	let first = final.charAt(0).toUpperCase()
-	return first + final.substring(1)
-}
-
-function removeActiveClass(parent) {
-	for (let i of parent.children) {
-		if (i.classList.contains('active'))
-			i.classList.toggle('active')
+function resetColor(...args) {
+	for (let el of args) {
+		el.style.color = '#fff'
 	}
 }
 
-function changeActiveClass(element) {
-	removeActiveClass(element.parentElement)
-	if (!element.classList.contains('active'))
-			element.classList.toggle('active')
-
+function updateElementState(item, newValue) {
+	item.val = newValue
+	item.el.innerHTML = newValue
+	item.el.style.height = (MAX_HEIGHT - (MAX_HEIGHT/NUM_ELEMENTS)*(NUM_ELEMENTS-newValue))+"px"
 }
 
-function getRandomColor(index) {
-  let letters = '0123456789ABCDEF';
-  let color = '#8855';
-  for (let i = 0; i < 2; i++) {
-    color += letters.charAt(index );
-  }
-  return color;
+function swap(itemA, itemB) {
+	removeActiveClass(config.canvas, 'selected')
+
+	let temp = itemA.val
+	toggleSelected(itemA.el)
+	toggleSelected(itemB.el)
+
+	delay(800)
+	.then(() => {
+		updateElementState(itemA, itemB.val)
+		updateElementState(itemB, temp)
+		return delay(500)
+	})
+	.then(() => resetColor(itemA.el, itemB.el))
 }
-
-
 
 function setupSort(name) {
 	return function() {
@@ -75,7 +84,6 @@ function setupSort(name) {
 		config._sort = dekebab(current)
 		setPageTitle(config.active)
 		setPageDescription(config.active)
-
 	}
 }
 
@@ -92,42 +100,43 @@ function setPageDescription(name) {
 	el.innerHTML = config.Text
 }
 
+
 function runAlgo() {
-	const visual = document.getElementById('visual')
-	let index = Math.floor(Math.random()*NUM_ELEMENTS)
-	let index2 = Math.floor(Math.random()*NUM_ELEMENTS)
+	const visual = config.canvas
 
-	let el1 = config._values[index].el
-	let el2 = config._values[index2].el
+	let index = randInt(NUM_ELEMENTS)
+	let index2 = randInt(NUM_ELEMENTS)
 
-	el1.style['width'] = '0px'
-	el2.style['width'] = '0px'
-	el1.style['opacity'] = '0'
-	el2.style['opacity'] = '0'
+	let el1 = config._values[index]
+	let el2 = config._values[index2]
 
-	setTimeout(() => {
-		el1.style['width'] = '25px'
-		el2.style['width'] = '25px'
-		el1.style['opacity'] = '1'
-		el2.style['opacity'] = '1'
-	}, 500)
+	swap(el1, el2)
 
-	visual.insertBefore(el1, el2)
-	console.log(config._values)
+}
+
+function resetCanvas() {
+	for (let item of config._values) {
+		let value = randInt(NUM_ELEMENTS) + 1
+		updateElementState(item, value)
+	}
 }
 
 function setupColumns() {
-	const visual = document.getElementById('visual')
+	config.init()
+	const visual = config.canvas
 	for (let i = 1; i <= NUM_ELEMENTS; i++) {
 		let element = document.createElement('div')
-		element.innerHTML = i
+
+		let value = randInt(NUM_ELEMENTS) + 1
+
 		visual.appendChild(element)
 		element.style['background-color'] = getRandomColor(i-1)
-		element.style.height = (MAX_HEIGHT - (MAX_HEIGHT/NUM_ELEMENTS)*(NUM_ELEMENTS-i))+"px"
-		config._values.push({ val: i, el: element })
-		setTimeout(() => {
-		   element.classList.toggle('loaded')
-		}, i*100)
+		let item = { val: value, el: element }
+		updateElementState(item, value)
+		config._values.push(item)
+
+		delay(i*100)
+		.then(() => element.classList.toggle('loaded'))
 	}
 }
 
@@ -142,9 +151,8 @@ function setupDOM() {
 
 	let run = document.getElementById('run')
 	run.addEventListener('click', runAlgo)
-
-	//let reset = document.getElementById('reset')
-	//reset.addEventListener('click',
+	let reset = document.getElementById('reset')
+	reset.addEventListener('click', resetCanvas)
 
 	setupColumns()
 	console.log("All Done.")
