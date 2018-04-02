@@ -5,14 +5,20 @@ const NUM_ELEMENTS = 16
 
 const config = {
 
-	_sort : false,
+	_sort : null,
 	_values: [],
 	_visual: null,
+	_generator: null,
 
 	init: function() {
+		setupSort("Insertion")()
 		this._values = []
-		this._sort   = "Bucket"
 		this._visual = document.getElementById('visual')
+		this._generator = insertionSort()
+	},
+
+	step: function() {
+		this._generator.next()
 	},
 
 	get canvas() {
@@ -55,7 +61,7 @@ function resetColor(...args) {
 function updateElementState(item, newValue) {
 	item.val = newValue
 	item.el.innerHTML = newValue
-	item.el.style.height = (MAX_HEIGHT - (MAX_HEIGHT/NUM_ELEMENTS)*(NUM_ELEMENTS-newValue))+"px"
+	item.el.style.height = (MAX_HEIGHT - (MAX_HEIGHT/NUM_ELEMENTS)*(NUM_ELEMENTS-newValue)) + 5+"px"
 }
 
 function swap(itemA, itemB) {
@@ -81,7 +87,7 @@ function setupSort(name) {
 			return
 
 		// else
-		config._sort = dekebab(current)
+		config._sort = current
 		setPageTitle(config.active)
 		setPageDescription(config.active)
 	}
@@ -100,21 +106,22 @@ function setPageDescription(name) {
 	el.innerHTML = config.Text
 }
 
-
 function runAlgo() {
-	const visual = config.canvas
+	if (config._generator)
+		config.step()
+}
 
-	let index = randInt(NUM_ELEMENTS)
-	let index2 = randInt(NUM_ELEMENTS)
-
-	let el1 = config._values[index]
-	let el2 = config._values[index2]
-
-	swap(el1, el2)
+function animateAlgo() {
+	if (!config._generator.next().done) {
+		setTimeout(animateAlgo, 1000)
+	} else {
+		removeActiveClass(config.canvas, 'selected')
+	}
 
 }
 
 function resetCanvas() {
+	config._generator = null
 	for (let item of config._values) {
 		let value = randInt(NUM_ELEMENTS) + 1
 		updateElementState(item, value)
@@ -153,6 +160,8 @@ function setupDOM() {
 	run.addEventListener('click', runAlgo)
 	let reset = document.getElementById('reset')
 	reset.addEventListener('click', resetCanvas)
+	let animate = document.getElementById('animate')
+	animate.addEventListener('click', animateAlgo)
 
 	setupColumns()
 	console.log("All Done.")
