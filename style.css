@@ -1,0 +1,27 @@
+#visual {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: center;
+	height: 256px;
+	margin: 50px 0px;
+}
+
+#visual div {
+	text-align: center;
+	min-width: 25px;
+	margin: 0 5px;
+	height: 100%;
+	background-color: #fff;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+
+#visual div.loaded {
+	opacity: 1;
+}
+
+#visual div.loaded:hover {
+	opacity: 0.5;
+	transition: opacity 0s;
+}
