@@ -121,7 +121,7 @@ function animateAlgo() {
 }
 
 function resetCanvas() {
-	config._generator = null
+	config._generator = insertionSort()
 	for (let item of config._values) {
 		let value = randInt(NUM_ELEMENTS) + 1
 		updateElementState(item, value)
