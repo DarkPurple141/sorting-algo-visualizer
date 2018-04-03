@@ -1,6 +1,6 @@
 'use strict';
 
-const MAX_HEIGHT = 300
+const MAX_HEIGHT = 280
 const NUM_ELEMENTS = 16
 
 const config = {
@@ -9,12 +9,21 @@ const config = {
 	_values: [],
 	_visual: null,
 	_generator: null,
+	_generators: {
+		'Insertion': insertionSort,
+		'Bubble'   : bubbleSort,
+		'Bucket'   : insertionSort,
+		'Merge'    : mergeSort
+	},
 
 	init: function() {
-		setupSort("Insertion")()
 		this._values = []
 		this._visual = document.getElementById('visual')
-		this._generator = insertionSort()
+		this.setAlgo()
+	},
+
+	setAlgo: function() {
+		this._generator = this._generators[this._sort]()
 	},
 
 	step: function() {
@@ -41,7 +50,9 @@ const config = {
 			case "Merge":
 				text = "Merge sort works by first dividing the unsorted list into n sublists, each containing 1 element.\ Then, repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list."
 			break;
-
+			case "Bubble":
+				text = "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order."
+			break;
 			case "Bucket":
 				text = "Bucket sort, or bin sort, is a sorting algorithm that works by distributing the elements of an array into\
 		 a number of buckets. Each bucket is then sorted individually, either using a different sorting algorithm, or by \
@@ -90,6 +101,8 @@ function setupSort(name) {
 		config._sort = current
 		setPageTitle(config.active)
 		setPageDescription(config.active)
+
+		config.setAlgo()
 	}
 }
 
@@ -113,7 +126,7 @@ function runAlgo() {
 
 function animateAlgo() {
 	if (!config._generator.next().done) {
-		setTimeout(animateAlgo, 1000)
+		setTimeout(animateAlgo, 800)
 	} else {
 		removeActiveClass(config.canvas, 'selected')
 	}
@@ -121,14 +134,19 @@ function animateAlgo() {
 }
 
 function resetCanvas() {
-	config._generator = insertionSort()
+	let count = 1
+
+	removeActiveClass(config.canvas, 'sorted')
+	config.setAlgo()
 	for (let item of config._values) {
 		let value = randInt(NUM_ELEMENTS) + 1
+		item.el.style['background-color'] = getRandomColor((count++)-1)
 		updateElementState(item, value)
 	}
 }
 
 function setupColumns() {
+	setupSort('Insertion')()
 	config.init()
 	const visual = config.canvas
 	for (let i = 1; i <= NUM_ELEMENTS; i++) {
@@ -149,7 +167,7 @@ function setupColumns() {
 
 function setupDOM() {
 	console.log("Beginning setup...")
-	let ids = ['bucket-link', 'merge-link', 'insertion-link']
+	let ids = ['bucket-link', 'merge-link', 'insertion-link', 'bubble-link']
 
 	for (let type of ids) {
 		let element = document.getElementById(type)
