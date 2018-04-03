@@ -66,10 +66,68 @@ function *bubbleSort() {
 }
 
 function *_merge(l, m, r) {
+    let i, j, k
 
+    let n1 = m - l + 1;
+    let n2 =  r - m;
+
+    removeActiveClass(config.canvas, 'selected')
+    yield toggleClassInRange(config.canvas, 'selected', l, r)
+
+    let array = config._values
+    const L = []
+    const R = []
+
+    // careful with refernces
+    for (let i = l; i < m+1; i++) {
+      L.push({ val: array[i].val })
+    }
+    for (let i = m+1; i < r+1; i++) {
+      R.push({ val: array[i].val })
+    }
+
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0 // Initial index of first subarray
+    j = 0 // Initial index of second subarray
+    k = l // Initial index of merged subarray
+    while (i < n1 && j < n2)
+    {
+        if (L[i].val <= R[j].val)
+        {
+            array[k].val = L[i].val;
+            i++;
+        }
+        else
+        {
+            array[k].val = R[j].val;
+            j++;
+        }
+        yield updateElement(array[k])
+        k++;
+    }
+
+    /* Copy the remaining elements of L[], if there
+       are any */
+    while (i < n1)
+    {
+        array[k].val = L[i].val;
+        yield updateElement(array[k])
+        i++;
+        k++;
+    }
+
+    /* Copy the remaining elements of R[], if there
+       are any */
+    while (j < n2)
+    {
+        array[k].val = R[j].val;
+        yield updateElement(array[k])
+        j++;
+        k++;
+    }
 }
 
-function *_mergeSort(arr, l, r) {
+function *_mergeSort(l, r) {
 
    removeActiveClass(config.canvas, 'selected')
    yield toggleClassInRange(config.canvas, 'selected', l, r)
@@ -78,13 +136,13 @@ function *_mergeSort(arr, l, r) {
     {
         // Same as (l+r)/2, but avoids overflow for
         // large l and h
-        let m = Math.floor((l+r)/2);
+        let m = Math.floor((l+r)/2)
 
-        yield* _mergeSort(arr, l, m)
+        yield* _mergeSort(l, m)
         // Sort first and second halves
-        yield* _mergeSort(arr, m+1, r)
+        yield* _mergeSort(m+1, r)
 
-        yield* _merge(l, m, r);
+        yield* _merge(l, m, r)
     }
 }
 
@@ -92,11 +150,15 @@ function *_mergeSort(arr, l, r) {
    nonrecursive cos generators are not fun in this way
 */
 function *mergeSort() {
-   const workArray = config._values.slice(0)
-   const manager = _mergeSort(workArray, 0, workArray.length-1)
+   const manager = _mergeSort(0, config._values.length - 1)
    for (let step of manager) {
       yield step
    }
+
+   for (let i = 0; i < config._values.length; i++) {
+      toggleSorted(config._values[i].el)
+   }
+   yield 1
 }
 
 function *insertionSort() {

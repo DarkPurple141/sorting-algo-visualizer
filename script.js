@@ -91,6 +91,13 @@ function swap(itemA, itemB) {
 	.then(() => resetColor(itemA.el, itemB.el))
 }
 
+function updateElement(itemA) {
+	delay(200)
+	.then(() => {
+		updateElementState(itemA, itemA.val)
+	})
+}
+
 function setupSort(name) {
 	return function() {
 		let current = dekebab(name)
