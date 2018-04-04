@@ -63,8 +63,12 @@ function toggleSorted(el) {
    el.classList.toggle('sorted')
 }
 
+function toggleMin(el) {
+   el.classList.toggle('min')
+}
+
 function toggleSelected(el) {
-   el.style.color = 'yellow'
+   //el.style.color = 'yellow'
 	el.classList.toggle('selected')
 }
 
@@ -198,23 +202,23 @@ const algos = {
          description: "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order."
       },
       "Selection": {
-         description: "The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list. Initially, the sorted sublist is empty and the unsorted sublist is the entire input list. The algorithm proceeds by finding the smallest (or largest, depending on sorting order) element in the unsorted sublist, exchanging (swapping) it with the leftmost unsorted element (putting it in sorted order), and moving the sublist boundaries one element to the right."
+         description: "The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list."
       },
       "Quick": {
          description: "Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort then recursively sorts the sub-arrays."}
    },
 
    bubbleSort: function *() {
-      let array = config._values
+      const array = config._values
       let count = 0
       for (let i = 0; i < array.length; i++) {
-         for (var j = 1; j < array.length - i; j++) {
+         for (let j = 1; j < array.length - i; j++) {
              if (array[j-1].val > array[j].val) {
                  swap(array[j], array[j-1])
              }
              yield count++
          }
-         toggleSorted(array[j-1].el)
+         yield toggleSorted(array[array.length - i - 1].el)
       }
    },
 
@@ -238,7 +242,32 @@ const algos = {
    },
 
    selectionSort: function *() {
+      const array = config._values
+      let count = 0
+      for (let i = 0; i < array.length; i++) {
+         let min = i
+         yield toggleMin(array[min].el)
+         for (let j = i + 1; j < array.length; j++) {
+             toggleSelected(array[j].el)
+             if (array[j].val < array[min].val) {
+                yield toggleMin(array[min].el)
+                min = j
+                // toggle old min
+                toggleMin(array[j].el)
+             }
+             yield count++
+             toggleSelected(array[j].el)
+         }
 
+         toggleMin(array[min].el)
+         yield swap(array[i], array[min])
+         .then(() => removeActiveClass(config.canvas, 'selected'))
+         .then(() => toggleSorted(array[i].el))
+         count++
+
+      }
+
+      yield count++
    },
 
    insertionSort: function *() {
@@ -249,8 +278,7 @@ const algos = {
              if (array[j-1].val <= array[j].val) {
                 break
              }
-             swap(array[j], array[j-1])
-             yield count++
+             yield swap(array[j], array[j-1])
          }
       }
 

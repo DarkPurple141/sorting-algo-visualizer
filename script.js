@@ -85,12 +85,11 @@ function updateElementState(item, newValue) {
 
 function swap(itemA, itemB) {
 	removeActiveClass(config.canvas, 'selected')
-
 	let temp = itemA.val
 	toggleSelected(itemA.el)
 	toggleSelected(itemB.el)
 
-	delay(800)
+	return delay(800)
 	.then(() => {
 		updateElementState(itemA, itemB.val)
 		updateElementState(itemB, temp)
@@ -137,6 +136,7 @@ function setPageDescription(name) {
 function runAlgo() {
 	if (config._generator)
 		config.step()
+	return false
 }
 
 function animateAlgo() {
@@ -145,7 +145,7 @@ function animateAlgo() {
 	} else {
 		removeActiveClass(config.canvas, 'selected')
 	}
-
+	return false
 }
 
 function resetCanvas() {
@@ -158,6 +158,7 @@ function resetCanvas() {
 		item.el.style['background-color'] = getRandomColor((count++)-1)
 		updateElementState(item, value)
 	}
+	return false
 }
 
 function setupColumns() {

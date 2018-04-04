@@ -22,7 +22,7 @@ main {
 	background-color: #fff;
 	opacity: 0;
 	border: none;
-	transition: opacity 0.3s, color 0.5s ease, height 0.8s, border 0.5s ease;
+	transition: opacity 0.3s, color 0.5s ease, height 0.8s, background-color 0.3s, border 0.5s ease;
 }
 
 #visual div.sorted {
@@ -31,6 +31,10 @@ main {
 
 #visual div.selected {
 	border: 1px solid yellow;
+}
+
+#visual div.min {
+	border: 5px solid yellow;
 }
 
 #visual div.loaded {
