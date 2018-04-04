@@ -4,12 +4,12 @@
 	<!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta content="Crowd source the name of your future love spawn." name="description" data-hid="description">
+    <meta content="See all your favourite algorithms come to life." name="description">
     <meta content="/og-image.jp2" property="og:image">
     <meta content="1332" property="og:image:width">
     <meta content="1044" property="og:image:height">
     <meta content="SortVisualiser" property="og:title">
-    <meta content="Animated sorting algos." property="og:description">
+    <meta content="See all your favourite algorithms come to life." property="og:description">
     <meta content="http://alhinds.com/sorting-algo-visualizer/" property="og:url">
 
 	<title>Sort Vis</title>
@@ -18,7 +18,7 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
    <link rel="stylesheet" type="text/css" href="cover.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
-   <script type="text/javascript" src="lib.js"></script>
+   <script type="text/javascript" src="lib.js" defer></script>
 	<script type="text/javascript" src="script.js" defer></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous" defer></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous" defer></script>
@@ -30,11 +30,12 @@
       <header class="masthead">
         <div class="inner">
           <h3 class="masthead-brand">SortVis</h3>
-          <nav class="nav nav-masthead justify-content-center">
-            <a id="insertion-link" class="nav-link active" href="#" onclick="changeActiveClass(this)">Insertion</a>
-            <a id="bubble-link" class="nav-link" href="#" onclick="changeActiveClass(this)">Bubble</a>
-            <a id="bucket-link" class="nav-link" href="#" onclick="changeActiveClass(this)">Bucket</a>
-            <a id="merge-link" class="nav-link" href="#" onclick="changeActiveClass(this)">Merge</a>
+          <nav class="nav nav-masthead">
+            <a id="insertion-link" class="nav-link active" href="#Insertion" onclick="changeActiveClass(this)">Insertion</a>
+            <a id="bubble-link" class="nav-link" href="#Bubble" onclick="changeActiveClass(this)">Bubble</a>
+            <a id="selection-link" class="nav-link" href="#Selection" onclick="changeActiveClass(this)">Selection</a>
+            <a id="merge-link" class="nav-link" href="#Merge" onclick="changeActiveClass(this)">Merge</a>
+            <a id="quick-link" class="nav-link" href="#Quick" onclick="changeActiveClass(this)">Quick</a>
           </nav>
         </div>
       </header>
@@ -42,10 +43,10 @@
       </article>
 
       <section role="main" class="inner cover">
-        <h1 id="title" class="cover-heading">Bucket Sort</h1>
-        <p  id="description" class="lead">Bucket sort, or bin sort, is a sorting algorithm that works by distributing the elements of an array into
-		 a number of buckets. Each bucket is then sorted individually, either using a different sorting algorithm, or by
-		 recursively applying the bucket sorting algorithm.</p>
+        <h1 id="title" class="cover-heading">Insertion Sort</h1>
+        <p  id="description" class="lead">Insertion sort iterates, consuming one input element each repetition,
+   and growing a sorted output list. At each iteration, insertion sort removes one element from the input data,
+   finds the location it belongs within the sorted list, and inserts it there. It repeats until no input elements remain.</p>
         <p class="lead">
           <a id="animate" href="#" class="btn btn-lg btn-secondary">Run</a>
           <a id="run" href="#" class="btn btn-lg btn-secondary">Step</a>
@@ -55,7 +56,7 @@
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
-          <p>Code and design by <a href="https://twitter.com/al_hinds">@al_hinds</a>.</p>
+          <p>Code and design by <a href="https://twitter.com/al_hinds">@al_hinds</a>, source: <a href="https://github.com/DarkPurple141/sorting-algo-visualizer">github/DarkPurple141</a>.</p>
         </div>
       </footer>
     </main>

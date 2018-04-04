@@ -83,9 +83,7 @@ body {
 /*
  * Cover
  */
-.cover {
-  padding: 0 1.5rem;
-}
+
 .cover .btn-lg {
   padding: .75rem 1.25rem;
   font-weight: 700;
@@ -101,5 +99,14 @@ body {
 @media screen and (max-width: 700px) {
    .cover-container {
       max-width: 480px;
+   }
+
+   .nav-masthead {
+      width: 100%;
+      float: none;
+   }
+
+   .nav-masthead .nav-link {
+      margin: 5px auto 5px 0;
    }
 }

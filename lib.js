@@ -1,3 +1,29 @@
+/*
+MIT License
+
+Copyright (c) 2018 Alex Hinds
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+// HELPERS
 
 function delay(ms) {
    return new Promise(res => setTimeout(res, ms))
@@ -51,20 +77,7 @@ function getRandomColor(index) {
   return color;
 }
 
-function *bubbleSort() {
-   let array = config._values
-   let count = 0
-   for (let i = 0; i < array.length; i++) {
-      for (var j = 1; j < array.length - i; j++) {
-          if (array[j-1].val > array[j].val) {
-              swap(array[j], array[j-1])
-          }
-          yield count++
-      }
-      toggleSorted(array[j-1].el)
-   }
-}
-
+/// SORTING BELOW THIS LINE
 function *_merge(l, m, r) {
     let i, j, k
 
@@ -146,37 +159,105 @@ function *_mergeSort(l, r) {
     }
 }
 
-/*
-   nonrecursive cos generators are not fun in this way
-*/
-function *mergeSort() {
-   const manager = _mergeSort(0, config._values.length - 1)
-   for (let step of manager) {
-      yield step
-   }
+function *_partition() {
 
-   for (let i = 0; i < config._values.length; i++) {
-      toggleSorted(config._values[i].el)
-   }
-   yield 1
 }
 
-function *insertionSort() {
-   let array = config._values
-   let count = 0
-   for (let i = 1; i < array.length; i++) {
-      for (let j = i; j > 0; j--) {
-          if (array[j-1].val <= array[j].val) {
-             break
-          }
-          swap(array[j], array[j-1])
-          yield count++
-      }
-   }
+function *_quickSort() {
+   /*
+   algorithm quicksort(A, lo, hi) is
+    if lo < hi then
+        p := partition(A, lo, hi)
+        quicksort(A, lo, p - 1 )
+        quicksort(A, p + 1, hi)
 
-   /* technically redundant but more to show when sorted */
-   for (let i = 0; i < array.length; i++) {
-      toggleSorted(array[i].el)
+algorithm partition(A, lo, hi) is
+    pivot := A[hi]
+    i := lo - 1
+    for j := lo to hi - 1 do
+        if A[j] < pivot then
+            i := i + 1
+            swap A[i] with A[j]
+    swap A[i + 1] with A[hi]
+    return i + 1
+    */
+}
+
+const algos = {
+
+   info: {
+      "Insertion": {
+         description: "Insertion sort iterates, consuming one input element each repetition,\
+         and growing a sorted output list. At each iteration, insertion sort removes one element from the input data,\
+         finds the location it belongs within the sorted list, and inserts it there. It repeats until no input elements remain."
+      },
+      "Merge": {
+         description: "Merge sort works by first dividing the unsorted list into n sublists, each containing one element. Then, repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list."
+      },
+      "Bubble": {
+         description: "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order."
+      },
+      "Selection": {
+         description: "The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list. Initially, the sorted sublist is empty and the unsorted sublist is the entire input list. The algorithm proceeds by finding the smallest (or largest, depending on sorting order) element in the unsorted sublist, exchanging (swapping) it with the leftmost unsorted element (putting it in sorted order), and moving the sublist boundaries one element to the right."
+      },
+      "Quick": {
+         description: "Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort then recursively sorts the sub-arrays."}
+   },
+
+   bubbleSort: function *() {
+      let array = config._values
+      let count = 0
+      for (let i = 0; i < array.length; i++) {
+         for (var j = 1; j < array.length - i; j++) {
+             if (array[j-1].val > array[j].val) {
+                 swap(array[j], array[j-1])
+             }
+             yield count++
+         }
+         toggleSorted(array[j-1].el)
+      }
+   },
+
+   /*
+      nonrecursive cos generators are not fun in this way
+   */
+   mergeSort: function *() {
+      const manager = _mergeSort(0, config._values.length - 1)
+      for (let step of manager) {
+         yield step
+      }
+
+      for (let i = 0; i < config._values.length; i++) {
+         toggleSorted(config._values[i].el)
+      }
+      yield 1
+   },
+
+   quickSort: function *() {
+      // TODO
+   },
+
+   selectionSort: function *() {
+
+   },
+
+   insertionSort: function *() {
+      let array = config._values
+      let count = 0
+      for (let i = 1; i < array.length; i++) {
+         for (let j = i; j > 0; j--) {
+             if (array[j-1].val <= array[j].val) {
+                break
+             }
+             swap(array[j], array[j-1])
+             yield count++
+         }
+      }
+
+      /* technically redundant but more to show when sorted */
+      for (let i = 0; i < array.length; i++) {
+         toggleSorted(array[i].el)
+      }
+      yield count++
    }
-   yield count++
 }

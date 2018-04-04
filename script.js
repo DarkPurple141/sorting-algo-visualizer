@@ -1,6 +1,31 @@
 'use strict';
 
-const MAX_HEIGHT = 280
+/*
+MIT License
+
+Copyright (c) 2018 Alex Hinds
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+let MAX_HEIGHT = 260
 const NUM_ELEMENTS = 16
 
 const config = {
@@ -10,11 +35,14 @@ const config = {
 	_visual: null,
 	_generator: null,
 	_generators: {
-		'Insertion': insertionSort,
-		'Bubble'   : bubbleSort,
-		'Bucket'   : insertionSort,
-		'Merge'    : mergeSort
+		'Insertion': algos.insertionSort,
+		'Bubble'   : algos.bubbleSort,
+		'Selection': algos.selectionSort,
+		'Merge'    : algos.mergeSort,
+		'Quick'    : algos.quickSort
 	},
+
+	_informaton : algos.info,
 
 	init: function() {
 		this._values = []
@@ -39,27 +67,7 @@ const config = {
 	},
 
 	get Text() {
-		let text
-
-		switch(this.active) {
-			case "Insertion":
-				text = "Insertion sort iterates, consuming one input element each repetition,\
-		 and growing a sorted output list. At each iteration, insertion sort removes one element from the input data,\
-		 finds the location it belongs within the sorted list, and inserts it there. It repeats until no input elements remain."
-			break;
-			case "Merge":
-				text = "Merge sort works by first dividing the unsorted list into n sublists, each containing 1 element.\ Then, repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list."
-			break;
-			case "Bubble":
-				text = "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order."
-			break;
-			case "Bucket":
-				text = "Bucket sort, or bin sort, is a sorting algorithm that works by distributing the elements of an array into\
-		 a number of buckets. Each bucket is then sorted individually, either using a different sorting algorithm, or by \
-		 recursively applying the bucket sorting algorithm."
-			break;
-		}
-		return text
+		return this._informaton[this._sort].description
 	}
 }
 
@@ -174,7 +182,12 @@ function setupColumns() {
 
 function setupDOM() {
 	console.log("Beginning setup...")
-	let ids = ['bucket-link', 'merge-link', 'insertion-link', 'bubble-link']
+	let ids = ['selection-link',
+				  'merge-link',
+				  'insertion-link',
+				  'bubble-link',
+				  'quick-link'
+			  ]
 
 	for (let type of ids) {
 		let element = document.getElementById(type)

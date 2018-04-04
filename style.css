@@ -1,18 +1,22 @@
+main {
+	padding: 3rem;
+}
+
 #visual {
 	position: relative;
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
 	justify-content: flex-start;
-	height: 280px;
+	height: 260px;
 	min-height: 35vh;
 	margin: 25px 0px;
 }
 
 #visual div {
 	text-align: center;
-	width: 28px;
-	margin: 0 5px;
+	width: 30px;
+	margin: 0 auto 0 0;
 	height: 100%;
 	color: inherit;
 	background-color: #fff;
@@ -44,10 +48,12 @@
 	}
 
 	#visual {
-		min-width: 400px;
+		width: 100%;
+		min-width: 300px;
 	}
 
 	#visual div {
-		width: 16px;
+		margin: 0 auto;
+		width: 17px;
 	}
 }
