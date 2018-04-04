@@ -55,7 +55,7 @@ const config = {
 	},
 
 	iterate: function() {
-		Promise.resolve(this._iterations++)
+		Promise.resolve(++this._iterations)
 		.then(count => {
 			document.getElementById('counter').innerHTML = count
 		})

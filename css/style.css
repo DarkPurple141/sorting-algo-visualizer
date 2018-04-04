@@ -10,7 +10,8 @@ main {
 	justify-content: flex-start;
 	height: 290px;
 	min-height: 35vh;
-	margin: 20px 0px;
+	margin-top: auto;
+	margin-bottom: 20px;
 }
 
 #visual div {
