@@ -41,7 +41,7 @@ const config = {
 		'Merge'    : algos.mergeSort,
 		'Quick'    : algos.quickSort
 	},
-
+	_iterations: 0,
 	_informaton : algos.info,
 
 	init: function() {
@@ -52,6 +52,13 @@ const config = {
 
 	setAlgo: function() {
 		this._generator = this._generators[this._sort]()
+	},
+
+	iterate: function() {
+		Promise.resolve(this._iterations++)
+		.then(count => {
+			document.getElementById('counter').innerHTML = count
+		})
 	},
 
 	step: function() {
@@ -68,6 +75,10 @@ const config = {
 
 	get Text() {
 		return this._informaton[this._sort].description
+	},
+
+	get Complexity() {
+		return this._informaton[this._sort].complexity
 	}
 }
 
@@ -115,6 +126,7 @@ function setupSort(name) {
 		config._sort = current
 		setPageTitle(config.active)
 		setPageDescription(config.active)
+		setPageComplexity(config.active)
 
 		config.setAlgo()
 	}
@@ -131,6 +143,11 @@ function setPageTitle(name) {
 function setPageDescription(name) {
 	let el = document.getElementById('description')
 	el.innerHTML = config.Text
+}
+
+function setPageComplexity(name) {
+	let el = document.getElementById('complexity')
+	el.innerHTML = config.Complexity
 }
 
 function runAlgo() {
@@ -158,6 +175,10 @@ function resetCanvas() {
 		item.el.style['background-color'] = getRandomColor((count++)-1)
 		updateElementState(item, value)
 	}
+
+	config._iterations = -1
+	config.iterate()
+
 	return false
 }
 
@@ -170,11 +191,11 @@ function setupColumns() {
 
 		let value = randInt(NUM_ELEMENTS) + 1
 
-		visual.appendChild(element)
+		visual.prepend(element)
 		element.style['background-color'] = getRandomColor(i-1)
 		let item = { val: value, el: element }
 		updateElementState(item, value)
-		config._values.push(item)
+		config._values.unshift(item)
 
 		delay(i*100)
 		.then(() => element.classList.toggle('loaded'))

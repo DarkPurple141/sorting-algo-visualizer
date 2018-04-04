@@ -8,9 +8,9 @@ main {
 	flex-direction: row;
 	align-items: flex-end;
 	justify-content: flex-start;
-	height: 260px;
+	height: 290px;
 	min-height: 35vh;
-	margin: 25px 0px;
+	margin: 10px 0px;
 }
 
 #visual div {
@@ -46,6 +46,18 @@ main {
 	transition: opacity 0s;
 }
 
+#visual .counter {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.complexity {
+	font-weight: normal;
+	font-style: oblique;
+	color: rgba(255, 255, 255, 0.8);
+}
+
 @media screen and (max-width: 700px) {
 	html, body {
 		font-size: small;
@@ -59,5 +71,9 @@ main {
 	#visual div {
 		margin: 0 auto;
 		width: 17px;
+	}
+
+	#visual div.min {
+		border: 2.5px solid yellow;
 	}
 }

@@ -22,6 +22,7 @@ a:hover {
 html,
 body {
   background-color: #444;
+  min-height: 100vh;
 }
 
 body {

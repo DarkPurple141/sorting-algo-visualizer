@@ -119,6 +119,7 @@ function *_merge(l, m, r) {
             array[k].val = R[j].val;
             j++;
         }
+        config.iterate()
         yield updateElement(array[k])
         k++;
     }
@@ -129,6 +130,8 @@ function *_merge(l, m, r) {
     {
         array[k].val = L[i].val;
         yield updateElement(array[k])
+
+        config.iterate()
         i++;
         k++;
     }
@@ -139,6 +142,7 @@ function *_merge(l, m, r) {
     {
         array[k].val = R[j].val;
         yield updateElement(array[k])
+        config.iterate()
         j++;
         k++;
     }
@@ -146,7 +150,7 @@ function *_merge(l, m, r) {
 
 function *_mergeSort(l, r) {
 
-   removeActiveClass(config.canvas, 'selected')
+   yield removeActiveClass(config.canvas, 'selected')
    yield toggleClassInRange(config.canvas, 'selected', l, r)
 
    if (l < r)
@@ -154,7 +158,6 @@ function *_mergeSort(l, r) {
         // Same as (l+r)/2, but avoids overflow for
         // large l and h
         let m = Math.floor((l+r)/2)
-
         yield* _mergeSort(l, m)
         // Sort first and second halves
         yield* _mergeSort(m+1, r)
@@ -163,60 +166,76 @@ function *_mergeSort(l, r) {
     }
 }
 
-function *_partition() {
+function *_partition(lo, hi) {
 
+   const array = config._values
+   const pivot = array[hi].val
+
+   toggleMin(array[hi].el)
+
+   let i = lo - 1
+   for (let j = lo; j < hi; j++) {
+      if (array[j].val <= pivot) {
+         i++
+         if (i == j) continue
+         yield swap(array[i], array[j])
+      }
+      config.iterate()
+   }
+   swap(array[i+1], array[hi])
+   .then(() => toggleMin(array[hi].el))
+   yield i + 1
 }
 
-function *_quickSort() {
-   /*
-   algorithm quicksort(A, lo, hi) is
-    if lo < hi then
-        p := partition(A, lo, hi)
-        quicksort(A, lo, p - 1 )
-        quicksort(A, p + 1, hi)
+function *_quickSort(lo, hi) {
 
-algorithm partition(A, lo, hi) is
-    pivot := A[hi]
-    i := lo - 1
-    for j := lo to hi - 1 do
-        if A[j] < pivot then
-            i := i + 1
-            swap A[i] with A[j]
-    swap A[i + 1] with A[hi]
-    return i + 1
-    */
+   console.log("CALLING QSORT", lo, hi)
+   if (lo < hi) {
+      let part = _partition(lo, hi)
+      let mid
+      for (let item of part) {
+         mid = item
+         yield item
+      }
+      yield* _quickSort(lo, mid - 1)
+      yield* _quickSort(mid + 1, hi)
+   }
 }
 
 const algos = {
 
    info: {
       "Insertion": {
-         description: "Insertion sort iterates, consuming one input element each repetition,\
-         and growing a sorted output list. At each iteration, insertion sort removes one element from the input data,\
-         finds the location it belongs within the sorted list, and inserts it there. It repeats until no input elements remain."
+         description: "Insertion sort is an adaptive algorithm that works with two sublists. The lower sublist is always sorted; the algorithm then inserts elements from the upper sublist where they fit in the lower sublist.",
+         complexity: "n²"
       },
       "Merge": {
-         description: "Merge sort works by first dividing the unsorted list into n sublists, each containing one element. Then, repeatedly merge sublists to produce new sorted sublists until there is only 1 sublist remaining. This will be the sorted list."
+         description: "Merge sort works by first dividing the list into n sublists, each containing one element. Then, by repeatedly merging these sublists in order the algorithm will produce a final sorted list.",
+         complexity: "nlog(n)"
       },
       "Bubble": {
-         description: "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order."
+         description: "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list to be sorted, compares each pair of adjacent items and swaps them if they are in the wrong order.",
+         complexity: "n²"
       },
       "Selection": {
-         description: "The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list."
+         description: "The algorithm divides the input list into two parts: the sublist of items already sorted, which is built up from left to right at the front (left) of the list, and the sublist of items remaining to be sorted that occupy the rest of the list.",
+         complexity: "n²"
       },
       "Quick": {
-         description: "Quicksort is a divide and conquer algorithm. Quicksort first divides a large array into two smaller sub-arrays: the low elements and the high elements. Quicksort then recursively sorts the sub-arrays."}
+         description: "Quicksort uses a pivot (arbitrary, but often the top element of the list) to divide the list into two smaller sub-arrays: elements that are smaller and larger than the pivot. This continues recursively until the list is sorted.",
+         complexity: "nlog(n)"
+      }
    },
 
    bubbleSort: function *() {
       const array = config._values
-      let count = 0
+
       for (let i = 0; i < array.length; i++) {
          for (let j = 1; j < array.length - i; j++) {
              if (array[j-1].val > array[j].val) {
                  swap(array[j], array[j-1])
              }
-             yield count++
+             yield config.iterate()
          }
          yield toggleSorted(array[array.length - i - 1].el)
       }
@@ -226,7 +245,7 @@ const algos = {
       nonrecursive cos generators are not fun in this way
    */
    mergeSort: function *() {
-      const manager = _mergeSort(0, config._values.length - 1)
+      const manager = _mergeSort(0, config._values.length -1)
       for (let step of manager) {
          yield step
       }
@@ -234,16 +253,24 @@ const algos = {
       for (let i = 0; i < config._values.length; i++) {
          toggleSorted(config._values[i].el)
       }
-      yield 1
+      yield
    },
 
    quickSort: function *() {
-      // TODO
+      const manager = _quickSort(0, config._values.length -1)
+      for (let step of manager) {
+         yield step
+      }
+
+      for (let i = 0; i < config._values.length; i++) {
+         toggleSorted(config._values[i].el)
+      }
+      yield
    },
 
    selectionSort: function *() {
       const array = config._values
-      let count = 0
+
       for (let i = 0; i < array.length; i++) {
          let min = i
          yield toggleMin(array[min].el)
@@ -255,7 +282,7 @@ const algos = {
                 // toggle old min
                 toggleMin(array[j].el)
              }
-             yield count++
+             yield config.iterate()
              toggleSelected(array[j].el)
          }
 
@@ -263,21 +290,19 @@ const algos = {
          yield swap(array[i], array[min])
          .then(() => removeActiveClass(config.canvas, 'selected'))
          .then(() => toggleSorted(array[i].el))
-         count++
 
       }
-
-      yield count++
+      yield
    },
 
    insertionSort: function *() {
       let array = config._values
-      let count = 0
       for (let i = 1; i < array.length; i++) {
          for (let j = i; j > 0; j--) {
              if (array[j-1].val <= array[j].val) {
                 break
              }
+             yield config.iterate()
              yield swap(array[j], array[j-1])
          }
       }
@@ -286,6 +311,7 @@ const algos = {
       for (let i = 0; i < array.length; i++) {
          toggleSorted(array[i].el)
       }
-      yield count++
+      // one final pause.
+      yield
    }
 }
