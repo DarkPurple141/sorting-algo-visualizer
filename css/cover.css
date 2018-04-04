@@ -90,6 +90,10 @@ body {
   font-weight: 700;
 }
 
+.cover {
+   margin: 20px 0;
+}
+
 /*
  * Footer
  */
