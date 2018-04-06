@@ -129,7 +129,7 @@ function *_merge(l, m, r) {
     while (i < n1)
     {
         array[k].val = L[i].val;
-        yield updateElement(array[k])
+        updateElement(array[k])
 
         config.iterate()
         i++;
@@ -141,11 +141,13 @@ function *_merge(l, m, r) {
     while (j < n2)
     {
         array[k].val = R[j].val;
-        yield updateElement(array[k])
+        updateElement(array[k])
         config.iterate()
         j++;
         k++;
     }
+
+    yield
 }
 
 function *_mergeSort(l, r) {
