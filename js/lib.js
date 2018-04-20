@@ -191,7 +191,6 @@ function *_partition(lo, hi) {
 
 function *_quickSort(lo, hi) {
 
-   console.log("CALLING QSORT", lo, hi)
    if (lo < hi) {
       let part = _partition(lo, hi)
       let mid
@@ -235,7 +234,7 @@ const algos = {
       for (let i = 0; i < array.length; i++) {
          for (let j = 1; j < array.length - i; j++) {
              if (array[j-1].val > array[j].val) {
-                 swap(array[j], array[j-1])
+                 yield swap(array[j], array[j-1])
              }
              yield config.iterate()
          }
